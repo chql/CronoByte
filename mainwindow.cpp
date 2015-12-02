@@ -30,9 +30,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::processFinished(int runTime)
 {
+    // Formata exibicao
+    QString unit = "ms";
+    double time = (double)runTime;
+
+    if(time >= 1000)
+    {
+        unit = "s";
+        time /= 1000;
+    }
+
+    QString str = QString("%1 (%2 %3)").arg(
+                                            m_procExe.split("/").last(),
+                                            QString::number(time,'g',4),
+                                            unit);
+    ui->listWidget->addItem(str);
+
     on_actionParar_triggered();
-	// TODO: melhorar formatacao
-    ui->listWidget->addItem(QString("%1 ms").arg(runTime));
     ui->listWidget->scrollToBottom();
     ui->listWidget->item(ui->listWidget->count()-1)->setSelected(true);
 
@@ -59,7 +73,12 @@ void MainWindow::on_actionExecutavel_triggered()
 
     fd.setAcceptMode(QFileDialog::AcceptOpen);
     fd.setFileMode(QFileDialog::ExistingFile);
+
+#ifdef Q_OS_WIN32
     fd.setNameFilter("Executável do Windows (*.exe)");
+#else
+    fd.setNameFilter("Executável (*.*)");
+#endif
 
     if(fd.exec() == QDialog::Accepted)
     {
