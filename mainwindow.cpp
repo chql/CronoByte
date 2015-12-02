@@ -30,7 +30,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::processFinished(int runTime)
 {
-    // Formata exibicao
     QString unit = "ms";
     double time = (double)runTime;
 
